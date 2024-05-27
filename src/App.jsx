@@ -1,5 +1,5 @@
-import { Post } from "./components/post";
-import { Header } from "./components/header";
+import { Posts } from "./components/Posts";
+import { Header } from "./components/Header";
 
 export const App = () => {
 
@@ -7,7 +7,7 @@ export const App = () => {
     <>
       <Header />
       <main>
-        <Post />
+        <Posts />
       </main>
     </>
   );

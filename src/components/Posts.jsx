@@ -1,6 +1,6 @@
 import { posts } from "../data/posts"
 
-export const Post = () => {
+export const Posts = () => {
   // 日付を変換
   const formatDate = (dateString) => {
     const date = new Date(dateString);
