@@ -3,14 +3,14 @@ import { posts } from "../data/posts";
 
 export const Post = () => {
 
-  //URLのパラメータを取得。動的なルートパスで指定されたパラメータのidをコンポーネント内で利用。
+  // URLのパラメータを取得。動的なルートパスで指定されたパラメータのidをコンポーネント内で利用。
   const { id } = useParams();
 
-  //findは配列から条件一致する最初の要素を見つける。
-  //idが文字列である可能性があるためNumber関数でidを数値に変換。
+  // findは配列から条件一致する最初の要素を見つける。
+  // idが文字列である可能性があるためNumber関数でidを数値に変換。
   const post = posts.find(post => post.id === Number(id));
 
-  //URLのidがpostsの中に存在せずundefined防止。
+  // URLのidがpostsの中に存在せずundefined防止。
   if (!post) <div>記事が存在しません</div>;
 
   const formatDate = (dateString) => {
