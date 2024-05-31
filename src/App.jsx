@@ -10,7 +10,7 @@ export const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Posts />} />
-        <Route path="/posts/:id" element={<Post />} />
+        <Route path="/posts/:id" element={<Post />} />{/*データ構造がidをキーとして持つ場合、URLパスも:id形式で定義。*/}
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </>
