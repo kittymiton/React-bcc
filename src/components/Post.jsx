@@ -10,7 +10,7 @@ export const Post = () => {
   // idが文字列である可能性があるためNumber関数でidを数値に変換。
   const post = posts.find(post => post.id === Number(id));
 
-  // URLのidがpostsの中に存在せずundefined防止。
+  // URLのidがpostsの中に存在しなかった場合にundefined防止。
   if (!post) <div>記事が存在しません</div>;
 
   const formatDate = dateString => {
