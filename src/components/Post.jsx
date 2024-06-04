@@ -13,7 +13,7 @@ export const Post = () => {
   // URLのidがpostsの中に存在せずundefined防止。
   if (!post) <div>記事が存在しません</div>;
 
-  const formatDate = (dateString) => {
+  const formatDate = dateString => {
     const date = new Date(dateString);
     return date.toLocaleDateString("ja-JP");
   }
