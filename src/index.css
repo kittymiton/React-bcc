@@ -29,9 +29,9 @@ a {
   text-decoration: none;
   color: #fff;
 }
-a:visited {
+/* a:visited {
   color: inherit;
-}
+} */
 main {
   width: min(100%, 800px);
   margin: 0 auto;
@@ -134,3 +134,13 @@ form button:first-of-type {
 form button:hover {
   cursor: pointer;
 }
+/* NavLinkで適用された現在のページ */
+/* .active {
+  color: rgb(239, 206, 204);
+} */
+/* a:hover {
+  color: rgb(213, 239, 204);
+} */
+/* .no-hover:hover {
+  color: #fff; ホバー時の色を元の色と同じにする
+} */

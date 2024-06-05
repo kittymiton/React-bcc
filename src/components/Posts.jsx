@@ -1,4 +1,5 @@
 import { posts } from "../data/posts"
+import { Link } from 'react-router-dom'
 
 export const Posts = () => {
   // 日付を変換
@@ -10,19 +11,21 @@ export const Posts = () => {
     <ul>
       {posts.map(post => (
         <li key={post.id}>
-          <div className="post">
-            <div className="post-info">
-              <p>{formatDate(post.createdAt)}</p>
-              <ul>{post.categories.map(category => (
-                <li key={category}>
-                  {category}
-                </li>
-              ))}
-              </ul>
+          <Link to={`posts/${post.id}`}>
+            <div className="post">
+              <div className="post-info">
+                <p>{formatDate(post.createdAt)}</p>
+                <ul>{post.categories.map(category => (
+                  <li key={category}>
+                    {category}
+                  </li>
+                ))}
+                </ul>
+              </div>
+              <h1>{post.title}</h1>
+              <p dangerouslySetInnerHTML={{ __html: post.content }} />
             </div>
-            <h1>{post.title}</h1>
-            <p dangerouslySetInnerHTML={{ __html: post.content }} />
-          </div>
+          </Link>
         </li>
       ))}
     </ul>
