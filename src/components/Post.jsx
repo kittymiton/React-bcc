@@ -24,11 +24,11 @@ export const Post = () => {
         <img src={post.thumbnailUrl} alt={post.title} />
         <div className="post-info">
           <p>{formatDate(post.createdAt)}</p>
-          <ul>{post.categories.map(category => (
+          <ul>{post.categories.map(category =>
             <li key={category}>
               {category}
             </li>
-          ))}
+          )}
           </ul>
         </div>
         <h1>{post.title}</h1>
