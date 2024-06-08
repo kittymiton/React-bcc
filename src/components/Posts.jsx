@@ -17,6 +17,8 @@ export const Posts = () => {
 
   const [loading, setLoading] = useState(false);// Loading状態を状態管理することで、アプリケーションは非同期処理が完了するまで待つことなく、ユーザーに対して迅速にレスポンスを提供し、画面の更新を行うことができます。
 
+  const [error, setError] = useState(null);
+
 
   // 関数コンポーネント内は純粋関数として保つ必要があり、非同期通信のような副作用はuseEffectの中で書く。 副作用とは、関数の実行過程で外部の状態を変更する操作を指します。非同期通信、タイマーの設定、サブスクリプションの開始などが副作用に該当します。これらの操作は、副作用関数をコンポーネントの本体から分離させ関数コンポーネントのレンダリングとは独立して行われるべきです。
   useEffect(() => {
@@ -24,38 +26,52 @@ export const Posts = () => {
     // useEffectのCBに直接asyncがつけられないので、CB内でfetcher関数を定義
     const fetcher = async () => {
 
-      setLoading(true);
+      try {
 
-      // リクエスト送信
-      // awaitキーワードを使用して非同期処理の完了を待つ必要があります。
-      const res = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
+        setLoading(true);
 
-      // HTTPレスポンスをJSON形式に解析し、その結果をdataに格納
-      // このステップも非同期に行われるため、awaitキーワードを使用して非同期処理の完了を待ちます。
-      //const data = await res.json();
-      const { posts } = await res.json();
-      setPosts(posts);
-      //console.log(data); // res.json()から返されたdataはJSONオブジェクト全体で、このオブジェクトの中にはpostsというキーが存在し、その値は配列になっています。data自体はオブジェクトですが、その中に含まれるpostsキーの値は配列です。
+        // リクエスト送信
+        // awaitキーワードを使用して非同期処理の完了を待つ必要があります。
+        const res = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
 
-      //console.log(data.posts); // data.postsを使用することで配列にアクセスできます。
+        if (!res.ok) {
+          throw new Error('データが見つかりません');
+        }
 
-      // postsプロパティのみを状態として設定。
-      // postsには配列が格納され、その後の処理で直接配列操作を行うことができます。
-      //setPosts(data.posts);// fetcher();の直後にsetPosts(data.posts);を呼び出すと、非同期操作が完了する前にsetPosts関数が呼び出される可能性があります。これは非同期操作が非同期に行われるため、fetch関数の結果を得る前にsetPosts関数を呼び出すと、data.postsが未定義になる可能性があります。この問題を解決するためには、非同期操作が完全に完了し結果が得られた後にのみsetPosts関数を呼び出すようにする必要があります。「useEffectフック内で非同期関数を定義しその関数内で非同期操作を行い、結果を得た後にsetPosts関数を呼び出すことでこの問題を解決できます。」したがって、useEffectフックの第二引数に空配列を渡すことで副作用関数の再実行を制御することは有効ですが、それが非同期操作の結果を得た後にのみsetPosts関数を呼び出すことを保証するわけではありません。fetcher関数内での状態更新は、非同期処理の結果を直接扱うことができるため、推奨されます。
-      //setPosts(data.posts)をfetcher()の後に行うには、
-      //await fetcer();
-      //setPosts(data.posts)
-      //という感じで「fetcherを待つ必要があります」が、useEffectの仕様としてCBに非同期関数を渡すことができません。＝await fetcer();は書けない。なので、「fetcher自体を非同期にし」＝asyncにし、「その中で」setPostを行う必要があります！
-      //→非同期じゃなくなって空のデータがつめらたり中途半端な状態のデータになる可能性があるということ
+        // HTTPレスポンスをJSON形式に解析し、その結果をdataに格納
+        // このステップも非同期に行われるため、awaitキーワードを使用して非同期処理の完了を待ちます。
+        //const data = await res.json();
+        const { posts } = await res.json();
+        setPosts(posts);
+        //console.log(data); // res.json()から返されたdataはJSONオブジェクト全体で、このオブジェクトの中にはpostsというキーが存在し、その値は配列になっています。data自体はオブジェクトですが、その中に含まれるpostsキーの値は配列です。
 
-      setLoading(false);
-    }
+        //console.log(data.posts); // data.postsを使用することで配列にアクセスできます。
+
+        // postsプロパティのみを状態として設定。
+        // postsには配列が格納され、その後の処理で直接配列操作を行うことができます。
+        //setPosts(data.posts);// fetcher();の直後にsetPosts(data.posts);を呼び出すと、非同期操作が完了する前にsetPosts関数が呼び出される可能性があります。これは非同期操作が非同期に行われるため、fetch関数の結果を得る前にsetPosts関数を呼び出すと、data.postsが未定義になる可能性があります。この問題を解決するためには、非同期操作が完全に完了し結果が得られた後にのみsetPosts関数を呼び出すようにする必要があります。「useEffectフック内で非同期関数を定義しその関数内で非同期操作を行い、結果を得た後にsetPosts関数を呼び出すことでこの問題を解決できます。」したがって、useEffectフックの第二引数に空配列を渡すことで副作用関数の再実行を制御することは有効ですが、それが非同期操作の結果を得た後にのみsetPosts関数を呼び出すことを保証するわけではありません。fetcher関数内での状態更新は、非同期処理の結果を直接扱うことができるため、推奨されます。
+        //setPosts(data.posts)をfetcher()の後に行うには、
+        //await fetcer();
+        //setPosts(data.posts)
+        //という感じで「fetcherを待つ必要があります」が、useEffectの仕様としてCBに非同期関数を渡すことができません。＝await fetcer();は書けない。なので、「fetcher自体を非同期にし」＝asyncにし、「その中で」setPostを行う必要があります！
+        //→非同期じゃなくなって空のデータがつめらたり中途半端な状態のデータになる可能性があるということ
+      } catch (error) {
+        setError(error);
+
+      } finally {
+        setLoading(false);
+      }
+    };
     // 定義したfetcher関数を実行してデータ取得
     fetcher();
   }, []);
 
   if (loading) {
     return <div>読込中・・・</div>
+  };
+
+  if (error) {
+    return <div>記事取得エラー: {error.message}</div>
   };
 
   if (!loading && !posts) {
