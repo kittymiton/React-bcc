@@ -5,7 +5,14 @@ export const Post = () => {
 
   // react-routerのuseParamsを使うと、URLのパラメータを取得できます。動的なルートパスで指定されたパラメータのidをコンポーネント内で利用。
   const { id } = useParams();
-  const [post, setPost] = useState([]);// undefindになるので用意
+  const [post, setPost] = useState([]); // undefindになるので用意
+
+  // ★★error処理の流れ
+  // フェッチの関数内でtry~catchでフェッチの処理を囲み、http関連のエラーがスローされるとcatchブロックでスローされたエラーをステートに格納しエラーメッセージを画面に表示。
+  const [error, setError] = useState([]);
+
+  // ★★loading処理の流れ
+  // 最初はローディングは無効（false）設定ですが、フェッチ開始前にloadingを有効(true)反転状態に変更。再レンダリングで「読込中...」と表示。フェッチ完了しデータ更新後にローディングを無効(false)にし、再レンダリング。
   const [loading, setLoading] = useState(false);// 初期ロード時にはローディング状態を無効にセット
 
   // リクエスト送信
@@ -13,19 +20,30 @@ export const Post = () => {
 
     const fetcher = async () => {
 
-      // フェッチが開始される前にローディング状態を有効にする
+      // fetch開始前にローディング状態を有効にし、コンポーネントが再レンダリングされることでloadingステートに基づいて異なるUIを表示することができます。loadingがtrueの場合に「読込中...」と表示するようなローディングインジケーターを表示することができます。
       setLoading(true);
 
-      const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`);
+      try {
+        const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`);
 
-      // const data = await res.json();分割代入でjsonからpostを取り出す
-      //console.log(data);
-      const { post } = await res.json();
+        //fetchが失敗した場合、HTTPレスポンスのステータスコードに基づくエラーハンドリング処理。エラーがスローされる。※CORSエラーなどの非HTTPエラーに対しては効果的ではない。
+        if (!res.ok) {
+          throw new Error('データが見つかりません');
+        }
 
-      setPost(post);
+        // const data = await res.json();分割代入でjsonからpostを取り出す
+        //console.log(data);
+        const { post } = await res.json();
+        setPost(post);
 
-      // フェッチが完了した後にローディング状態を無効にする
-      setLoading(false);
+        // エラーがスローされるとcatchが実行され、スローされたエラーがsetError関数に渡されerror状態に保存。コンポーネントのレンダリングロジックで if (error) { return <div>Error: {error.message}</div> } の条件分岐がマッチし、エラーメッセージが画面に表示されます。
+      } catch (error) {
+        setError(error);
+
+      } finally {
+        // フェッチが完了した後にローディング状態を無効にする。setLoading(false);で状態が更新されると、再びコンポーネントが再レンダリングされます。しかし、もしpostの内容がフェッチ成功前と後で同じであれば、Reactは新旧の状態が同じであると判断し、実際にはDOMを更新せずに済む場合があります。再レンダリングは発生しますが、もし新旧の状態が同じであれば、ReactはDOMを更新せずに済む場合があります。これは、Reactが不要なDOM操作を最適化するための機能です。再レンダリングがパフォーマンスに大きな影響を与えるのは、大規模なDOM操作や高頻度での再レンダリング（例えば、状態が頻繁に更新される）である場合です。ただし、Reactの再レンダリングは非常に高速であり、ほとんどの場合ではユーザーにとっては気づけないほど早いです。不要な再レンダリングの防止: React.memoやPureComponentを使用して、コンポーネントが再レンダリングされる条件を厳格に制御します。非同期処理の中で状態を更新する際には、必要な情報が揃った後に一度に状態を更新することで、不要な再レンダリングを減らすことができます。
+        setLoading(false);
+      }
     };
 
     fetcher();
@@ -40,7 +58,14 @@ export const Post = () => {
     return <div>読込中・・・</div>
   };
 
+  if (error) {
+    // JSのErrorオブジェクトのmessageプロパティを表示
+    // errorオブジェクトがnullやundefinedである場合、またはmessageプロパティが存在しない場合、{error.message}は何も表示されません。
+    return <div>個別記事取得エラー: {error.message}</div>
+  }
+
   // URLのidがpostsの中に存在しなかった場合にundefined防止。
+  // データフェッチが成功したものの、取得したデータが何もない状態である場合に適用されます。これは、APIからデータが返ってきたが、そのデータが何も含まれていない、または期待していたデータが存在しない場合に適用されます。この場合、データ自体は取得できていますが、その内容が何もないという状態となります。
   if (!loading && !post) {
     return <div>記事が存在しません</div>
   };
