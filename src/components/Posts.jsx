@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from "../constants";
 
 // ★★処理の流れ
 // 最初はデータは空ですが(この時にuseState使用)、フェッチでページ読み込み時に一度だけデータを取得(この時にuseEffectのCB関数内で関数を使用)し、画面更新を行う(この時にuseState使用)
@@ -32,7 +33,7 @@ export const Posts = () => {
 
         // リクエスト送信
         // awaitキーワードを使用して非同期処理の完了を待つ必要があります。
-        const res = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
+        const res = await fetch(`${API_BASE_URL}/posts`);
 
         if (!res.ok) {
           throw new Error('データが見つかりません');

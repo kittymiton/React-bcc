@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { API_BASE_URL } from "../constants";
 
 export const Post = () => {
 
@@ -24,7 +25,7 @@ export const Post = () => {
       setLoading(true);
 
       try {
-        const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`);
+        const res = await fetch(`${API_BASE_URL}/posts/${id}`);
 
         //fetchが失敗した場合、HTTPレスポンスのステータスコードに基づくエラーハンドリング処理。エラーがスローされる。※CORSエラーなどの非HTTPエラーに対しては効果的ではない。
         if (!res.ok) {
