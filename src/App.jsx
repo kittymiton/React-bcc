@@ -11,8 +11,8 @@ export const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Posts />} />
-        <Route path="/posts/:id" element={<Post />} />{/*データ構造がidをキーとして持つ場合、URLパスも:id形式で定義。*/}
-        <Route path="/contact" element={<Contact message="hello contact" />} />
+        <Route path="/posts/:id" element={<Post />} />{/*データがidをキーとして持つ場合、URLパスも:id形式で定義*/}
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </>
