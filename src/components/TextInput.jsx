@@ -1,11 +1,11 @@
-export const Textarea = ({ id, type, value, onChange, rows }) => {
+export const TextInput = ({ id, type, value, onChange }) => {
+
   return (
-    <textarea
+    <input
       id={id}
       type={type}
       value={value}
       onChange={e => onChange(e.target.value)}
-      rows={rows}
     />
   );
 };

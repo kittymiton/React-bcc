@@ -1,5 +1,4 @@
-// ユーザー入力を受け取り、その入力データを親コンポーネントに伝える
-export const Input = ({ id, type, value, onChange }) => {
+export const TextInput = ({ id, type, value, onChange }) => {
   //console.log(props);
   //const { id, type, value, onChange } = props;
 
